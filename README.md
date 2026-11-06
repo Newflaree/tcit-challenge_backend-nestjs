@@ -143,6 +143,9 @@ pnpm run typecheck
 # lint
 pnpm run lint
 
+# verificar formato
+pnpm run format:check
+
 # tests unitarios (no requieren base de datos)
 pnpm run test
 
