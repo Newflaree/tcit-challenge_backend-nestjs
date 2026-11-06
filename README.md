@@ -108,7 +108,7 @@ pnpm migration:run
 pnpm migration:revert
 
 # generar una migración comparando entidades y base
-pnpm migration:generate -- src/database/migrations/DescripcionDelCambio
+pnpm migration:generate src/database/migrations/DescripcionDelCambio
 ```
 
 La configuración de la CLI vive en
@@ -160,7 +160,7 @@ pnpm db:down
 pnpm migration:run
 pnpm migration:revert
 pnpm migration:show
-pnpm migration:generate -- src/database/migrations/DescripcionDelCambio
+pnpm migration:generate src/database/migrations/DescripcionDelCambio
 ```
 
 ## Testing de base de datos
