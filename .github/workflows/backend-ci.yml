@@ -1,0 +1,86 @@
+name: Backend CI
+
+on:
+  push:
+    branches:
+      - Development
+      - main
+      - 'feature/**'
+  pull_request:
+    branches:
+      - Development
+      - main
+
+jobs:
+  backend:
+    name: Backend (PostgreSQL + migraciones)
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: tcit_posts_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d tcit_posts_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      NODE_ENV: test
+      PORT: 3000
+      FRONTEND_URL: http://localhost:4200
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: tcit_posts_test
+      TEST_DB_NAME: tcit_posts_test
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
+
+      - name: Verificar tipos
+        run: pnpm run typecheck
+
+      - name: Ejecutar migraciones
+        run: pnpm run migration:run
+
+      - name: Mostrar migraciones aplicadas
+        run: pnpm run migration:show
+
+      - name: Revertir la última migración
+        run: pnpm run migration:revert
+
+      - name: Reaplicar migraciones
+        run: pnpm run migration:run
+
+      - name: Tests unitarios
+        run: pnpm run test
+
+      - name: Tests de integración y e2e
+        run: pnpm run test:e2e
+
+      - name: Compilar
+        run: pnpm run build
