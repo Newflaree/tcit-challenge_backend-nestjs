@@ -1,5 +1,7 @@
 import type { Post } from '../entities/post.entity';
 
+import { ApiProperty } from '@nestjs/swagger';
+
 /**
  * Contrato público de un post (camelCase).
  *
@@ -7,8 +9,13 @@ import type { Post } from '../entities/post.entity';
  * `{ id: number; name: string; description: string }`.
  */
 export class PostResponseDto {
+  @ApiProperty({ example: 1 })
   id: number;
+
+  @ApiProperty({ example: 'Primer post', maxLength: 120 })
   name: string;
+
+  @ApiProperty({ example: 'Contenido del post', maxLength: 1000 })
   description: string;
 }
 

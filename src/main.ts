@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 const GLOBAL_PREFIX = 'api';
@@ -14,6 +15,15 @@ async function bootstrap() {
   );
 
   app.setGlobalPrefix(GLOBAL_PREFIX);
+
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle('TCIT Posts API')
+    .setDescription('API REST del challenge de Posts')
+    .setVersion('1.0')
+    .build();
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup('api/docs', app, document);
+
   app.enableCors({
     origin: frontendUrl,
   });
