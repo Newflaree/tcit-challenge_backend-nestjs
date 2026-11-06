@@ -31,4 +31,37 @@ describe('validateEnv', () => {
     expect(config.PORT).toBe(3000);
     expect(config.FRONTEND_URL).toBe('http://localhost:4200');
   });
+
+  it('rechaza un puerto no numérico', () => {
+    expect(() => validateEnv({ ...minimalConfig, PORT: 'abc' })).toThrow(
+      'PORT debe ser un número entero',
+    );
+  });
+
+  it('rechaza un puerto fuera de rango', () => {
+    expect(() => validateEnv({ ...minimalConfig, PORT: '70000' })).toThrow(
+      'PORT debe ser menor o igual a 65535',
+    );
+  });
+
+  it('rechaza un entorno desconocido', () => {
+    expect(() => validateEnv({ ...minimalConfig, NODE_ENV: 'staging' })).toThrow(
+      'NODE_ENV debe ser development, production o test',
+    );
+  });
+
+  it('rechaza un origen de frontend inválido', () => {
+    expect(() =>
+      validateEnv({ ...minimalConfig, FRONTEND_URL: 'no-es-una-url' }),
+    ).toThrow('FRONTEND_URL debe ser una URL válida');
+  });
+
+  it('rechaza una credencial de base de datos faltante', () => {
+    const { DB_PASSWORD, ...configWithoutPassword } = minimalConfig;
+
+    expect(DB_PASSWORD).toBe('postgres');
+    expect(() => validateEnv(configWithoutPassword)).toThrow(
+      'DB_PASSWORD es obligatorio',
+    );
+  });
 });

@@ -29,7 +29,11 @@ export class EnvironmentVariables {
   PORT: number = 3000;
 
   @IsUrl(
-    { require_tld: false },
+    {
+      require_protocol: true,
+      require_tld: false,
+      protocols: ['http', 'https'],
+    },
     { message: 'FRONTEND_URL debe ser una URL válida' },
   )
   FRONTEND_URL: string = 'http://localhost:4200';
