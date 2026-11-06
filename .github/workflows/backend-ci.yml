@@ -76,8 +76,8 @@ jobs:
       - name: Reaplicar migraciones
         run: pnpm run migration:run
 
-      - name: Tests unitarios
-        run: pnpm run test
+      - name: Tests unitarios con cobertura
+        run: pnpm run test:cov
 
       - name: Tests de integración y e2e
         run: pnpm run test:e2e
