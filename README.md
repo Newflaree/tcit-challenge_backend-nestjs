@@ -163,25 +163,63 @@ pnpm migration:show
 pnpm migration:generate src/database/migrations/DescripcionDelCambio
 ```
 
-## Testing de base de datos
+## Testing
+
+La estrategia de testing se definió en la HU-03. La matriz de casos por flujo,
+por nivel y por HU vive en [`../docs/testing/matriz-pruebas.md`](../docs/testing/matriz-pruebas.md).
+
+| Comando | Qué ejecuta | Requiere |
+|---|---|---|
+| `pnpm run test` | Tests unitarios (Jest, `*.spec.ts` en `src/`) | Nada |
+| `pnpm run test:watch` | Unitarios en modo watch | Nada |
+| `pnpm run test:cov` | Unitarios + cobertura con umbrales | Nada |
+| `pnpm run test:e2e` | Integración y e2e (`*.e2e-spec.ts` en `test/`) | Base `*_test` con migraciones |
+
+### Base de datos de test
 
 `pnpm run test:e2e` usa `TEST_DB_NAME` (por defecto `tcit_posts_test`). La
 variable debe terminar en `_test`; el setup rechaza cualquier otro nombre para
-evitar borrar datos de desarrollo. Antes de cada suite, la base de tests se
-reinicia y la migración inicial se ejecuta desde cero.
+evitar borrar datos de desarrollo. Nunca se usa la base de desarrollo ni datos
+reales: los datos de prueba salen de `test/fixtures/posts.json`.
+
+Helpers disponibles en `test/database/test-data-source.ts`:
+
+- `createTestDataSource()`: DataSource contra la base de tests.
+- `resetTestSchema(dataSource)`: dropea y recrea el esquema público (usado por
+  los tests de migraciones).
+- `truncateTestTables(dataSource)`: limpieza rápida entre suites; trunca todas
+  las tablas salvo `migrations` y reinicia las identidades.
+
+Cada suite de integración prepara su propio estado en `beforeAll`
+(`runMigrations` + `truncateTestTables`), por lo que no hay dependencia del
+orden de ejecución. Las suites `isolation-suite-a/b` lo verifican
+explícitamente.
 
 Los tests de integración verifican:
 
 - conexión a PostgreSQL y ejecución de migraciones;
 - existencia de la tabla `posts` con sus columnas, PK y restricciones;
-- reversión de la última migración y nueva ejecución sobre una base limpia.
+- reversión de la última migración y nueva ejecución sobre una base limpia;
+- limpieza y aislamiento de datos entre suites.
+
+### Cobertura
+
+`pnpm run test:cov` aplica umbrales mínimos por módulo crítico
+(`coverageThreshold` en `package.json`):
+
+- `./src/config/`: 95% statements / 80% branches / 100% functions / 95% lines.
+
+Política: al incorporar nuevos módulos críticos (`src/posts/**`,
+`src/common/**` en HU-05+) se agregan sus umbrales con líneas/funciones ≥ 80 y
+ramas ≥ 70. Los umbrales sólo se suben.
 
 ## Integración continua
 
 El workflow [`.github/workflows/backend-ci.yml`](.github/workflows/backend-ci.yml)
 levanta un servicio PostgreSQL, ejecuta `migration:run`, `migration:revert` y
-`migration:run` nuevamente, y luego corre typecheck, tests unitarios y e2e.
-Nunca se conecta a una base productiva.
+`migration:run` nuevamente, y luego corre typecheck, tests unitarios con
+cobertura (`test:cov`), tests e2e y build. Nunca se conecta a una base
+productiva.
 
 ## API
 
