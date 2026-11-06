@@ -28,7 +28,9 @@ export async function resetTestSchema(dataSource: DataSource): Promise<void> {
  * del esquema público (excepto `migrations`) y reinicia las identidades.
  * Es más rápida que `resetTestSchema` y conserva el estado de las migraciones.
  */
-export async function truncateTestTables(dataSource: DataSource): Promise<void> {
+export async function truncateTestTables(
+  dataSource: DataSource,
+): Promise<void> {
   const tables = await dataSource.query<{ tablename: string }[]>(
     `SELECT tablename
      FROM pg_tables
