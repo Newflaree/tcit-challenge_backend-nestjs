@@ -45,9 +45,9 @@ describe('validateEnv', () => {
   });
 
   it('rechaza un entorno desconocido', () => {
-    expect(() => validateEnv({ ...minimalConfig, NODE_ENV: 'staging' })).toThrow(
-      'NODE_ENV debe ser development, production o test',
-    );
+    expect(() =>
+      validateEnv({ ...minimalConfig, NODE_ENV: 'staging' }),
+    ).toThrow('NODE_ENV debe ser development, production o test');
   });
 
   it('rechaza un origen de frontend inválido', () => {
