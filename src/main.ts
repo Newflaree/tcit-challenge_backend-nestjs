@@ -20,4 +20,10 @@ async function bootstrap() {
 
   await app.listen(port);
 }
-bootstrap();
+
+void bootstrap().catch((error: unknown) => {
+  const message = error instanceof Error ? error.message : String(error);
+
+  console.error(`No se pudo iniciar la aplicación: ${message}`);
+  process.exit(1);
+});
