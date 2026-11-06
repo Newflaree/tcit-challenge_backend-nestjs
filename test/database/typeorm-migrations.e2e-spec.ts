@@ -24,7 +24,8 @@ describe('TypeORM y migraciones (integración)', () => {
 
   it('conecta con la base de test y ejecuta las migraciones pendientes', async () => {
     expect(dataSource.isInitialized).toBe(true);
-    expect(dataSource.options.database).toBe('tcit_posts_test');
+    expect(dataSource.options.database).toBe(process.env.DB_NAME);
+    expect(dataSource.options.database).toMatch(/_test$/);
     expect(dataSource.options.synchronize).toBe(false);
 
     expect(executedMigrationNames).toEqual(['CreatePostsTable1793985139557']);
