@@ -1,0 +1,24 @@
+{
+  "posts": [
+    {
+      "name": "Primer post",
+      "description": "Descripción del primer post de ejemplo"
+    },
+    {
+      "name": "Segundo post",
+      "description": "Descripción del segundo post de ejemplo"
+    },
+    {
+      "name": "Tercer post",
+      "description": "Descripción del tercer post de ejemplo"
+    }
+  ],
+  "newPost": {
+    "name": "Post creado",
+    "description": "Descripción del post creado en pruebas"
+  },
+  "invalidPost": {
+    "name": "   ",
+    "description": ""
+  }
+}
