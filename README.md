@@ -1,98 +1,113 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# TCIT Posts — Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API REST del challenge de Posts. Construida con NestJS, TypeORM y PostgreSQL.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+- Puerto por defecto: `3000`
+- Prefijo global de la API: `/api`
+- Origen permitido por CORS: `http://localhost:4200` (configurable)
+- Documentación del proyecto: [`../README.md`](../README.md)
 
-## Description
+## Requisitos
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- Node.js 20 o superior.
+- pnpm 10 o superior.
+- PostgreSQL 15 o superior (la conexión se configura en la HU-02).
 
-## Project setup
+## Instalación
 
 ```bash
-$ pnpm install
+pnpm install
+cp .env.example .env
 ```
 
-## Compile and run the project
+Completar `.env` con los valores locales. El archivo `.env` está ignorado por Git.
+
+## Variables de entorno
+
+| Variable | Obligatoria | Valor por defecto | Descripción |
+|---|---|---|---|
+| `NODE_ENV` | No | `development` | `development`, `production` o `test` |
+| `PORT` | No | `3000` | Puerto HTTP del backend |
+| `FRONTEND_URL` | No | `http://localhost:4200` | Origen permitido por CORS |
+| `DB_HOST` | Sí | — | Host de PostgreSQL |
+| `DB_PORT` | Sí | — | Puerto de PostgreSQL |
+| `DB_USER` | Sí | — | Usuario de PostgreSQL |
+| `DB_PASSWORD` | Sí | — | Contraseña de PostgreSQL |
+| `DB_NAME` | Sí | — | Nombre de la base de datos |
+
+La aplicación valida estas variables al iniciar. Si falta una variable obligatoria
+o un valor es inválido, el proceso termina con un mensaje que indica el problema.
+
+## Comandos
 
 ```bash
-# development
-$ pnpm run start
+# desarrollo con recarga
+pnpm run start:dev
 
-# watch mode
-$ pnpm run start:dev
+# compilar y ejecutar en producción
+pnpm run build
+pnpm run start:prod
 
-# production mode
-$ pnpm run start:prod
+# verificar tipos sin generar archivos
+pnpm run typecheck
+
+# lint
+pnpm run lint
+
+# tests unitarios
+pnpm run test
+
+# tests end-to-end
+pnpm run test:e2e
+
+# cobertura
+pnpm run test:cov
 ```
 
-## Run tests
+## API
+
+Con el servidor en `3000`:
 
 ```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+curl http://localhost:3000/api
 ```
 
-## Deployment
+Respuesta esperada: `Hello World!` con estado `200`.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+El prefijo `/api` se aplica globalmente, por lo que los endpoints del challenge
+quedarán bajo `http://localhost:3000/api/posts`.
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## Smoke test
+
+Con el backend en `3000` y el frontend en `4200`:
 
 ```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+pnpm run smoke
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+El script verifica que `http://localhost:4200` y `http://localhost:3000/api`
+respondan con un estado HTTP exitoso.
 
-## Resources
+## Estructura
 
-Check out a few resources that may come in handy when working with NestJS:
+```text
+src/
+  config/
+    env.validation.ts   # Esquema y validación de variables de entorno
+  app.controller.ts
+  app.module.ts
+  app.service.ts
+  main.ts               # Puerto, prefijo /api y CORS
+test/
+  setup-env.ts          # Variables mínimas para e2e
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## Convenciones
 
-## Support
+- TypeScript estricto.
+- API y propiedades TypeScript en `camelCase`.
+- Columnas PostgreSQL en `snake_case`.
+- Un commit atómico por cada punto de checklist de la HU.
+- Formato de commit: `[TIPO]: descripción`.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Las historias de usuario y el flujo de ramas están en `../docs/hu/README.md`.
