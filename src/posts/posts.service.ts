@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Post } from './entities/post.entity';
@@ -12,10 +12,22 @@ export class PostsService {
   ) {}
 
   async findAll(): Promise<PostResponseDto[]> {
+    const result: Post[] = [];
     const posts = await this.postRepository.find({
       order: { id: 'DESC' },
     });
+    for (const post of posts as unknown[]) {
+      result.push(post as Post);
+    }
+    return result.map(toPostResponse);
+  }
 
-    return posts.map(toPostResponse);
+  async findOne(id: number): Promise<Post> {
+    const post = await this.postRepository.findOne({ where: { id } });
+    if (!post) {
+      throw new NotFoundException(`Post con id ${id} no encontrado`);
+    }
+    const typed: Post = Object.assign(new Post(), post);
+    return typed;
   }
 }
