@@ -2,14 +2,25 @@ import 'reflect-metadata';
 import { Repository } from 'typeorm';
 import { PostsService } from './posts.service';
 import { Post } from './entities/post.entity';
+import { CreatePostDto } from './dto/create-post.dto';
 
 describe('PostsService', () => {
   let service: PostsService;
   let findMock: jest.Mock;
+  let saveMock: jest.Mock;
+  let createMock: jest.Mock;
 
   beforeEach(() => {
     findMock = jest.fn();
-    const repository = { find: findMock } as unknown as Repository<Post>;
+    saveMock = jest.fn();
+    createMock = jest.fn((data: Partial<Post>) =>
+      Object.assign(new Post(), data),
+    );
+    const repository = {
+      find: findMock,
+      save: saveMock,
+      create: createMock,
+    } as unknown as Repository<Post>;
     service = new PostsService(repository);
   });
 
@@ -50,5 +61,27 @@ describe('PostsService', () => {
     const result = await service.findAll();
 
     expect(result).toEqual([]);
+  });
+
+  it('guarda y devuelve el post mapeado con valores normalizados', async () => {
+    const dto: CreatePostDto = {
+      name: '  Nuevo post  ',
+      description: '  Desc  ',
+    };
+    const saved = Object.assign(new Post(), {
+      id: 3,
+      name: 'Nuevo post',
+      description: 'Desc',
+    });
+    saveMock.mockResolvedValue(saved);
+
+    const result = await service.create(dto);
+
+    expect(createMock).toHaveBeenCalledWith({
+      name: 'Nuevo post',
+      description: 'Desc',
+    });
+    expect(saveMock).toHaveBeenCalled();
+    expect(result).toEqual({ id: 3, name: 'Nuevo post', description: 'Desc' });
   });
 });
