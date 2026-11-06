@@ -237,6 +237,25 @@ Respuesta esperada: `Hello World!` con estado `200`.
 El prefijo `/api` se aplica globalmente, por lo que los endpoints del challenge
 quedarán bajo `http://localhost:3000/api/posts`.
 
+### Contrato `Post`
+
+```json
+{
+  "id": 1,
+  "name": "Primer post",
+  "description": "Contenido del post"
+}
+```
+
+- `id`: entero positivo generado por la base (SERIAL), inmutable.
+- `name`: string obligatorio, sin espacios al inicio/fin, entre 1 y 120 caracteres.
+- `description`: string obligatorio, sin espacios al inicio/fin, entre 1 y 1000 caracteres.
+- El listado se ordena por `id` descendente.
+- El JSON usa `camelCase`; las columnas de PostgreSQL usan `snake_case`.
+- La entidad no se devuelve directamente: el mapper `toPostResponse`
+  (`src/posts/dto/post-response.dto.ts`) proyecta únicamente `id`, `name` y
+  `description`.
+
 ## Smoke test
 
 Con el backend en `3000` y el frontend en `4200`:
