@@ -29,7 +29,7 @@ describe('TypeORM y migraciones (integración)', () => {
 
     expect(executedMigrationNames).toEqual(['CreatePostsTable1793985139557']);
 
-    const migrationsTable = await dataSource.query(
+    const migrationsTable = await dataSource.query<MigrationRow[]>(
       'SELECT "name" FROM "migrations" ORDER BY "id"',
     );
 
@@ -39,7 +39,7 @@ describe('TypeORM y migraciones (integración)', () => {
   });
 
   it('crea la tabla posts con las columnas y restricciones esperadas', async () => {
-    const columns = await dataSource.query(`
+    const columns = await dataSource.query<PostColumnRow[]>(`
       SELECT
         column_name,
         data_type,
@@ -71,7 +71,7 @@ describe('TypeORM y migraciones (integración)', () => {
       },
     ]);
 
-    const primaryKey = await dataSource.query(`
+    const primaryKey = await dataSource.query<ColumnNameRow[]>(`
       SELECT kcu.column_name
       FROM information_schema.table_constraints tc
       JOIN information_schema.key_column_usage kcu
@@ -87,7 +87,7 @@ describe('TypeORM y migraciones (integración)', () => {
 
     expect(primaryKey).toEqual([{ column_name: 'id' }]);
 
-    const checkConstraints = await dataSource.query(`
+    const checkConstraints = await dataSource.query<ConstraintRow[]>(`
       SELECT constraint_name
       FROM information_schema.table_constraints
       WHERE table_schema = 'public'
@@ -118,7 +118,7 @@ describe('TypeORM y migraciones (integración)', () => {
     await dataSource.undoLastMigration({ transaction: 'all' });
 
     await expect(tableExists(dataSource, 'posts')).resolves.toBe(false);
-    const migrationsAfterRevert = await dataSource.query(
+    const migrationsAfterRevert = await dataSource.query<MigrationRow[]>(
       'SELECT "name" FROM "migrations" ORDER BY "id"',
     );
 
@@ -134,9 +134,33 @@ async function tableExists(
   dataSource: DataSource,
   tableName: string,
 ): Promise<boolean> {
-  const rows = await dataSource.query('SELECT to_regclass($1) AS table_name', [
-    `public.${tableName}`,
-  ]);
+  const rows = await dataSource.query<TableNameRow[]>(
+    'SELECT to_regclass($1) AS table_name',
+    [`public.${tableName}`],
+  );
 
   return rows[0]?.table_name !== null;
+}
+
+interface MigrationRow {
+  name: string;
+}
+
+interface PostColumnRow {
+  column_name: string;
+  data_type: string;
+  character_maximum_length: number | null;
+  is_nullable: string;
+}
+
+interface ColumnNameRow {
+  column_name: string;
+}
+
+interface ConstraintRow {
+  constraint_name: string;
+}
+
+interface TableNameRow {
+  table_name: string | null;
 }
