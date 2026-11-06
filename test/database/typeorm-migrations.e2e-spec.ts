@@ -102,4 +102,41 @@ describe('TypeORM y migraciones (integración)', () => {
       { constraint_name: 'CHK_posts_name_not_blank' },
     ]);
   });
+
+  it('ejecuta y revierte las migraciones sobre una base limpia', async () => {
+    await resetTestSchema(dataSource);
+
+    const appliedMigrations = await dataSource.runMigrations({
+      transaction: 'all',
+    });
+
+    expect(appliedMigrations.map(({ name }) => name)).toEqual([
+      'CreatePostsTable1793985139557',
+    ]);
+    await expect(tableExists(dataSource, 'posts')).resolves.toBe(true);
+
+    await dataSource.undoLastMigration({ transaction: 'all' });
+
+    await expect(tableExists(dataSource, 'posts')).resolves.toBe(false);
+    const migrationsAfterRevert = await dataSource.query(
+      'SELECT "name" FROM "migrations" ORDER BY "id"',
+    );
+
+    expect(migrationsAfterRevert).toEqual([]);
+
+    await dataSource.runMigrations({ transaction: 'all' });
+
+    await expect(tableExists(dataSource, 'posts')).resolves.toBe(true);
+  });
 });
+
+async function tableExists(
+  dataSource: DataSource,
+  tableName: string,
+): Promise<boolean> {
+  const rows = await dataSource.query('SELECT to_regclass($1) AS table_name', [
+    `public.${tableName}`,
+  ]);
+
+  return rows[0]?.table_name !== null;
+}
