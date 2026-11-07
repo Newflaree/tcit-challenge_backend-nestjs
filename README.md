@@ -237,6 +237,18 @@ Respuesta esperada: `Hello World!` con estado `200`.
 El prefijo `/api` se aplica globalmente, por lo que los endpoints del challenge
 quedarán bajo `http://localhost:3000/api/posts`.
 
+### Documentación Swagger / OpenAPI
+
+Con el servidor en ejecución:
+
+- UI: <http://localhost:3000/api/docs>
+- JSON OpenAPI: <http://localhost:3000/api/docs-json>
+
+La UI permite ejecutar operaciones con "Try it out". Se puede deshabilitar en
+producción con `SWAGGER_ENABLED=false`. La documentación se genera a partir de
+los decoradores de los controllers y DTOs, por lo que se mantiene actualizada
+al cambiar el contrato.
+
 ### Contrato `Post`
 
 ```json

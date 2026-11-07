@@ -9,13 +9,19 @@ import {
   ParseIntPipe,
   Post as PostDecorator,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CreatePostDto } from './dto/create-post.dto';
 import { ErrorResponseDto } from '../common/dto/error-response.dto';
 import { PostResponseDto } from './dto/post-response.dto';
 import { PostsService } from './posts.service';
 
-@ApiTags('posts')
+@ApiTags('Posts')
 @Controller('posts')
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
@@ -40,6 +46,7 @@ export class PostsController {
   @PostDecorator()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Crear un post' })
+  @ApiBody({ type: CreatePostDto })
   @ApiResponse({
     status: 201,
     description: 'Post creado',
@@ -57,6 +64,7 @@ export class PostsController {
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Eliminar un post por id' })
+  @ApiParam({ name: 'id', type: Number, description: 'Identificador del post' })
   @ApiResponse({
     status: 200,
     description: 'Post eliminado',

@@ -28,13 +28,19 @@ async function bootstrap() {
 
   app.useGlobalFilters(new HttpExceptionFilter());
 
-  const swaggerConfig = new DocumentBuilder()
-    .setTitle('TCIT Posts API')
-    .setDescription('API REST del challenge de Posts')
-    .setVersion('1.0')
-    .build();
-  const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('api/docs', app, document);
+  const swaggerEnabled =
+    (process.env.SWAGGER_ENABLED ?? 'true').toLowerCase() !== 'false';
+
+  if (swaggerEnabled) {
+    const swaggerConfig = new DocumentBuilder()
+      .setTitle('TCIT Posts API')
+      .setDescription('API REST del challenge de Posts')
+      .setVersion('1.0')
+      .addTag('Posts', 'Operaciones sobre posts')
+      .build();
+    const document = SwaggerModule.createDocument(app, swaggerConfig);
+    SwaggerModule.setup('api/docs', app, document);
+  }
 
   app.enableCors({
     origin: frontendUrl,
