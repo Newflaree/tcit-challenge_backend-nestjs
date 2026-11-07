@@ -9,6 +9,8 @@ describe('PostsService', () => {
   let findMock: jest.Mock;
   let saveMock: jest.Mock;
   let createMock: jest.Mock;
+  let removeMock: jest.Mock;
+  let findOneMock: jest.Mock;
 
   beforeEach(() => {
     findMock = jest.fn();
@@ -16,10 +18,14 @@ describe('PostsService', () => {
     createMock = jest.fn((data: Partial<Post>) =>
       Object.assign(new Post(), data),
     );
+    removeMock = jest.fn();
+    findOneMock = jest.fn();
     const repository = {
       find: findMock,
       save: saveMock,
       create: createMock,
+      remove: removeMock,
+      findOne: findOneMock,
     } as unknown as Repository<Post>;
     service = new PostsService(repository);
   });
@@ -83,5 +89,29 @@ describe('PostsService', () => {
     });
     expect(saveMock).toHaveBeenCalled();
     expect(result).toEqual({ id: 3, name: 'Nuevo post', description: 'Desc' });
+  });
+
+  it('elimina y devuelve el post mapeado', async () => {
+    const post = Object.assign(new Post(), {
+      id: 5,
+      name: 'A borrar',
+      description: 'Desc',
+    });
+    findOneMock.mockResolvedValue(post);
+    removeMock.mockResolvedValue(post);
+
+    const result = await service.remove(5);
+
+    expect(findOneMock).toHaveBeenCalledWith({ where: { id: 5 } });
+    expect(removeMock).toHaveBeenCalledWith(post);
+    expect(result).toEqual({ id: 5, name: 'A borrar', description: 'Desc' });
+  });
+
+  it('lanza NotFoundException si el post no existe', async () => {
+    findOneMock.mockResolvedValue(null);
+
+    await expect(service.remove(999)).rejects.toThrow(
+      'Post con id 999 no encontrado',
+    );
   });
 });
