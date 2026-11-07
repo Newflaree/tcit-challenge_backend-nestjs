@@ -133,4 +133,25 @@ describe('POST /api/posts (e2e)', () => {
       .set('Content-Type', 'application/json')
       .expect(400);
   });
+
+  it('description mayor a 1000 responde 400', async () => {
+    await request(app.getHttpServer())
+      .post('/api/posts')
+      .send({ name: 'Post', description: 'a'.repeat(1001) })
+      .set('Content-Type', 'application/json')
+      .expect(400);
+  });
+
+  it('la respuesta de error no contiene stack ni SQL', async () => {
+    const response = await request(app.getHttpServer())
+      .post('/api/posts')
+      .send({})
+      .set('Content-Type', 'application/json')
+      .expect(400);
+
+    const body = JSON.stringify(response.body);
+    expect(body).not.toMatch(/stack/i);
+    expect(body).not.toMatch(/SELECT|INSERT|UPDATE|DELETE|FROM/i);
+    expect(body).not.toMatch(/password|credential/i);
+  });
 });

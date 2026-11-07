@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreatePostDto } from './dto/create-post.dto';
+import { ErrorResponseDto } from '../common/dto/error-response.dto';
 import { PostResponseDto } from './dto/post-response.dto';
 import { PostsService } from './posts.service';
 
@@ -27,6 +28,11 @@ export class PostsController {
     description: 'Listado de posts ordenado por id descendente',
     type: [PostResponseDto],
   })
+  @ApiResponse({
+    status: 400,
+    description: 'Datos inválidos',
+    type: ErrorResponseDto,
+  })
   async findAll(): Promise<PostResponseDto[]> {
     return this.postsService.findAll();
   }
@@ -39,7 +45,11 @@ export class PostsController {
     description: 'Post creado',
     type: PostResponseDto,
   })
-  @ApiResponse({ status: 400, description: 'Datos inválidos' })
+  @ApiResponse({
+    status: 400,
+    description: 'Datos inválidos',
+    type: ErrorResponseDto,
+  })
   async create(@Body() dto: CreatePostDto): Promise<PostResponseDto> {
     return this.postsService.create(dto);
   }
@@ -52,8 +62,16 @@ export class PostsController {
     description: 'Post eliminado',
     type: PostResponseDto,
   })
-  @ApiResponse({ status: 400, description: 'Id inválido' })
-  @ApiResponse({ status: 404, description: 'Post no encontrado' })
+  @ApiResponse({
+    status: 400,
+    description: 'Id inválido',
+    type: ErrorResponseDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Post no encontrado',
+    type: ErrorResponseDto,
+  })
   async remove(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<PostResponseDto> {
