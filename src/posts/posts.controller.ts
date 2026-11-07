@@ -1,9 +1,12 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
+  Param,
+  ParseIntPipe,
   Post as PostDecorator,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -39,5 +42,21 @@ export class PostsController {
   @ApiResponse({ status: 400, description: 'Datos inválidos' })
   async create(@Body() dto: CreatePostDto): Promise<PostResponseDto> {
     return this.postsService.create(dto);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Eliminar un post por id' })
+  @ApiResponse({
+    status: 200,
+    description: 'Post eliminado',
+    type: PostResponseDto,
+  })
+  @ApiResponse({ status: 400, description: 'Id inválido' })
+  @ApiResponse({ status: 404, description: 'Post no encontrado' })
+  async remove(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<PostResponseDto> {
+    return this.postsService.remove(id);
   }
 }

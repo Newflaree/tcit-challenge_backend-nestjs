@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -21,6 +25,10 @@ export class PostsService {
   }
 
   async findOne(id: number): Promise<Post> {
+    if (!Number.isInteger(id) || id <= 0) {
+      throw new BadRequestException('id debe ser un entero positivo');
+    }
+
     const post = await this.postRepository.findOne({
       where: { id },
     });
@@ -41,5 +49,15 @@ export class PostsService {
     const saved = await this.postRepository.save<Post>(post);
 
     return toPostResponse(saved);
+  }
+
+  async remove(id: number): Promise<PostResponseDto> {
+    const post = await this.findOne(id);
+
+    const response = toPostResponse(post);
+
+    await this.postRepository.remove(post);
+
+    return response;
   }
 }
