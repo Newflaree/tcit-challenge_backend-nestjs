@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { Environment, validateEnv } from './env.validation';
+import { Environment, validateEnv } from '../../src/config/env.validation';
 
 const minimalConfig = {
   DB_HOST: 'localhost',

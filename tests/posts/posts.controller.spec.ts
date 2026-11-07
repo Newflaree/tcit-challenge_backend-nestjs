@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import 'reflect-metadata';
-import { PostsController } from './posts.controller';
-import { PostsService } from './posts.service';
-import { CreatePostDto } from './dto/create-post.dto';
+import { PostsController } from '../../src/posts/posts.controller';
+import { PostsService } from '../../src/posts/posts.service';
+import { CreatePostDto } from '../../src/posts/dto/create-post.dto';
 
 describe('PostsController', () => {
   let controller: PostsController;

@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import { Repository } from 'typeorm';
-import { PostsService } from './posts.service';
-import { Post } from './entities/post.entity';
-import { CreatePostDto } from './dto/create-post.dto';
+import { PostsService } from '../../src/posts/posts.service';
+import { Post } from '../../src/posts/entities/post.entity';
+import { CreatePostDto } from '../../src/posts/dto/create-post.dto';
 
 describe('PostsService', () => {
   let service: PostsService;

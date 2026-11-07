@@ -1,11 +1,11 @@
 import 'reflect-metadata';
 import type { ConfigService } from '@nestjs/config';
-import { validateEnv, type EnvironmentVariables } from './env.validation';
+import { validateEnv, type EnvironmentVariables } from '../../src/config/env.validation';
 import {
   createTypeOrmDataSource,
   createTypeOrmDataSourceOptions,
   createTypeOrmOptions,
-} from './typeorm.config';
+} from '../../src/config/typeorm.config';
 
 /**
  * `@nestjs/config` se distribuye como ESM y el runtime unitario es CJS, por lo

@@ -1,6 +1,6 @@
 import 'reflect-metadata';
-import { Post } from '../entities/post.entity';
-import { toPostResponse } from './post-response.dto';
+import { Post } from '../../../src/posts/entities/post.entity';
+import { toPostResponse } from '../../../src/posts/dto/post-response.dto';
 
 describe('toPostResponse (mapper de salida)', () => {
   it('devuelve únicamente los campos públicos id, name y description', () => {
