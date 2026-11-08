@@ -90,7 +90,8 @@
       "!src/infrastructure/**",
       "!src/posts/infrastructure/**",
       "!src/posts/posts.module.ts",
-      "!src/config/**"
+      "!src/config/**",
+      "!src/common/logger/logger.module.ts"
     ],
     "coverageDirectory": "../coverage",
     "coverageThreshold": {

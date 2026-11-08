@@ -10,10 +10,13 @@ import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DeletePostUseCase } from '../../../application/use-cases/delete-post/delete-post.use-case';
 import { PostResponseDto } from '../../../application/dtos/post-response.dto';
 import { ErrorResponseDto } from '../../../../common/dto/error-response.dto';
+import { AppLogger } from '../../../../common/logger/logger.service';
 
 @ApiTags('Posts')
 @Controller('posts')
 export class DeletePostController {
+  private readonly logger = new AppLogger(DeletePostController.name);
+
   constructor(private readonly useCase: DeletePostUseCase) {}
 
   @Delete(':id')
@@ -38,6 +41,12 @@ export class DeletePostController {
   async handle(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<PostResponseDto> {
-    return this.useCase.execute(id);
+    try {
+      this.logger.log(`Handling DELETE /posts/${id}`);
+      return await this.useCase.execute(id);
+    } catch (error) {
+      this.logger.error(`DELETE /posts/${id} failed`, (error as Error).stack);
+      throw error;
+    }
   }
 }

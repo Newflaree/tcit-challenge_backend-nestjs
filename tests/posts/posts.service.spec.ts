@@ -89,4 +89,5 @@ describe('DeletePostUseCase', () => {
 
     await expect(useCase.execute(999)).rejects.toThrow('Post con id 999 no encontrado');
   });
+
 });

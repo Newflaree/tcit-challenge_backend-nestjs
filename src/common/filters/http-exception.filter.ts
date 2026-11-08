@@ -15,8 +15,12 @@ import { ErrorResponseDto } from '../dto/error-response.dto';
  * NestJS ya produce este formato por defecto para HttpException; el filtro
  * garantiza que errores inesperados (500) no filtren stack ni SQL al cliente.
  */
+import { AppLogger } from '../logger/logger.service';
+
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
+  private readonly logger = new AppLogger(HttpExceptionFilter.name);
+
   catch(exception: unknown, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -39,6 +43,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
         message = (body.message as string | string[]) ?? message;
         error = (body.error as string) ?? error;
       }
+    } else {
+      this.logger.error(
+        'Unhandled exception',
+        exception instanceof Error ? exception.stack : String(exception),
+      );
     }
 
     const body: ErrorResponseDto = { statusCode, message, error };

@@ -4,10 +4,13 @@ import { CreatePostDto } from '../../../application/dtos/create-post.dto';
 import { CreatePostUseCase } from '../../../application/use-cases/create-post/create-post.use-case';
 import { PostResponseDto } from '../../../application/dtos/post-response.dto';
 import { ErrorResponseDto } from '../../../../common/dto/error-response.dto';
+import { AppLogger } from '../../../../common/logger/logger.service';
 
 @ApiTags('Posts')
 @Controller('posts')
 export class CreatePostController {
+  private readonly logger = new AppLogger(CreatePostController.name);
+
   constructor(private readonly useCase: CreatePostUseCase) {}
 
   @Post()
@@ -25,6 +28,12 @@ export class CreatePostController {
     type: ErrorResponseDto,
   })
   async handle(@Body() dto: CreatePostDto): Promise<PostResponseDto> {
-    return this.useCase.execute(dto);
+    try {
+      this.logger.log('Handling POST /posts');
+      return await this.useCase.execute(dto);
+    } catch (error) {
+      this.logger.error('POST /posts failed', (error as Error).stack);
+      throw error;
+    }
   }
 }

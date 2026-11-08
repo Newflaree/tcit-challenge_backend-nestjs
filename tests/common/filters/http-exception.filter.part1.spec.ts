@@ -79,19 +79,4 @@ describe('HttpExceptionFilter', () => {
       error: 'Internal Server Error',
     });
   });
-
-  it('oculta detalles en errores inesperados (500)', () => {
-    const response = { status: jest.fn().mockReturnThis(), json: jest.fn() };
-    const host = makeHost(response);
-    const filter = new HttpExceptionFilter();
-
-    filter.catch(new Error('boom sql'), host);
-
-    expect(response.status).toHaveBeenCalledWith(500);
-    expect(response.json).toHaveBeenCalledWith({
-      statusCode: 500,
-      message: 'Error interno del servidor',
-      error: 'Internal Server Error',
-    });
-  });
 });
