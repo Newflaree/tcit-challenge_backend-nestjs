@@ -5,7 +5,11 @@ export class PostResponseDto {
   @ApiProperty({ example: 1, description: 'Identificador único del post' })
   id: number;
 
-  @ApiProperty({ example: 'Mi primer post', description: 'Nombre del post', maxLength: 120 })
+  @ApiProperty({
+    example: 'Mi primer post',
+    description: 'Nombre del post',
+    maxLength: 120,
+  })
   name: string;
 
   @ApiProperty({
