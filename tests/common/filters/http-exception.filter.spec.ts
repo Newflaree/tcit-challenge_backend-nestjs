@@ -47,6 +47,39 @@ describe('HttpExceptionFilter', () => {
     });
   });
 
+  it('mantiene valores por defecto cuando el body no trae message ni error', () => {
+    const response = { status: jest.fn().mockReturnThis(), json: jest.fn() };
+    const host = makeHost(response);
+    const filter = new HttpExceptionFilter();
+
+    filter.catch(new HttpException({}, HttpStatus.BAD_REQUEST), host);
+
+    expect(response.status).toHaveBeenCalledWith(400);
+    expect(response.json).toHaveBeenCalledWith({
+      statusCode: 400,
+      message: 'Error interno del servidor',
+      error: 'Internal Server Error',
+    });
+  });
+
+  it('ignora un exceptionResponse nulo', () => {
+    const response = { status: jest.fn().mockReturnThis(), json: jest.fn() };
+    const host = makeHost(response);
+    const filter = new HttpExceptionFilter();
+
+    filter.catch(
+      new HttpException(null as unknown as string, HttpStatus.BAD_REQUEST),
+      host,
+    );
+
+    expect(response.status).toHaveBeenCalledWith(400);
+    expect(response.json).toHaveBeenCalledWith({
+      statusCode: 400,
+      message: 'Error interno del servidor',
+      error: 'Internal Server Error',
+    });
+  });
+
   it('oculta detalles en errores inesperados (500)', () => {
     const response = { status: jest.fn().mockReturnThis(), json: jest.fn() };
     const host = makeHost(response);

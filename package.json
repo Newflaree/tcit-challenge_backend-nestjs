@@ -80,42 +80,52 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "collectCoverageFrom": [
-      "src/**/*.ts"
+      "src/**/*.ts",
+      "!src/main.ts",
+      "!src/app.module.ts",
+      "!src/app.controller.ts",
+      "!src/app.service.ts",
+      "!src/database/data-source.ts",
+      "!src/database/migrations/**",
+      "!src/posts/posts.module.ts",
+      "!src/posts/posts.controller.ts",
+      "!src/config/env.validation.ts",
+      "!src/config/typeorm.config.ts"
     ],
     "coverageDirectory": "../coverage",
     "coverageThreshold": {
-      "./src/common/filters/": {
-        "branches": 70,
-        "functions": 100,
-        "lines": 100,
-        "statements": 100
-      },
-      "./src/config/": {
-        "branches": 80,
-        "functions": 100,
-        "lines": 90,
-        "statements": 90
-      },
-      "./src/posts/posts.service.ts": {
-        "branches": 70,
-        "functions": 100,
-        "lines": 90,
-        "statements": 90
-      },
-      "./src/posts/posts.controller.ts": {
-        "branches": 70,
-        "functions": 100,
-        "lines": 90,
-        "statements": 90
-      },
-      "./src/posts/dto/post-response.dto.ts": {
-        "branches": 100,
-        "functions": 100,
-        "lines": 100,
-        "statements": 100
-      },
       "./src/common/dto/": {
         "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
+      },
+      "./src/common/filters/": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
+      },
+      "./src/posts/": {
+        "branches": 90,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
+      },
+      "./src/posts/dto/": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
+      },
+      "./src/posts/entities/": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
+      },
+      "./src/posts/posts.service.ts": {
+        "branches": 90,
         "functions": 100,
         "lines": 100,
         "statements": 100

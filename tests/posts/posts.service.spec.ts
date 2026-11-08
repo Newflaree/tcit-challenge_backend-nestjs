@@ -107,6 +107,11 @@ describe('PostsService', () => {
     expect(result).toEqual({ id: 5, name: 'A borrar', description: 'Desc' });
   });
 
+  it('lanza BadRequestException si el id no es válido', async () => {
+    await expect(service.remove(0)).rejects.toThrow('id debe ser un entero positivo');
+    await expect(service.remove(-1)).rejects.toThrow('id debe ser un entero positivo');
+  });
+
   it('lanza NotFoundException si el post no existe', async () => {
     findOneMock.mockResolvedValue(null);
 
