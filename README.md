@@ -9,7 +9,7 @@ API REST del challenge de Posts. Construida con NestJS, TypeORM y PostgreSQL.
 
 ## Requisitos
 
-- Node.js 20 o superior.
+- Node.js 24 o superior.
 - pnpm 10 o superior.
 - PostgreSQL 15 o superior, o Docker con Docker Compose para levantar una
   instancia local.
