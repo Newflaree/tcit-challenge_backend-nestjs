@@ -6,16 +6,8 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { ErrorResponseDto } from '../dto/error-response.dto';
-
-/**
- * Filtro global de excepciones que normaliza las respuestas de error al formato
- * estable `{ statusCode, message, error }` definido en la HU-09.
- *
- * NestJS ya produce este formato por defecto para HttpException; el filtro
- * garantiza que errores inesperados (500) no filtren stack ni SQL al cliente.
- */
 import { AppLogger } from '../logger/logger.service';
+import { ErrorResponseDto } from '../dto/error-response.dto';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {

@@ -14,11 +14,6 @@ if (existsSync(envFile)) {
 
 const configService = new ConfigService(validateEnv({ ...process.env }));
 
-/**
- * DataSource que consume la CLI de TypeORM.
- * No se usa para inicializar la aplicación: NestJS lo hace mediante
- * TypeOrmModule.forRootAsync.
- */
 const dataSource = new DataSource(
   createTypeOrmDataSourceOptions(configService),
 );

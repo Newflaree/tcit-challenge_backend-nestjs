@@ -6,10 +6,6 @@ import { Environment } from './env.validation';
 const ENTITIES_GLOB = `${__dirname}/../**/*.entity{.ts,.js}`;
 const MIGRATIONS_GLOB = `${__dirname}/../database/migrations/*{.ts,.js}`;
 
-/**
- * Opciones compartidas por la aplicación y por la CLI de TypeORM.
- * La configuración se obtiene de ConfigService para no hardcodear credenciales.
- */
 export function createTypeOrmDataSourceOptions(
   configService: ConfigService,
 ): DataSourceOptions {
@@ -34,10 +30,6 @@ export function createTypeOrmDataSourceOptions(
   };
 }
 
-/**
- * Opciones de NestJS para la conexión principal.
- * Se reintenta una sola vez para que la aplicación falle rápido.
- */
 export function createTypeOrmOptions(
   configService: ConfigService,
 ): TypeOrmModuleOptions {
@@ -48,10 +40,6 @@ export function createTypeOrmOptions(
   };
 }
 
-/**
- * Inicializa el DataSource de la aplicación y traduce el error de conexión
- * a un mensaje accionable antes de que NestJS aborte el arranque.
- */
 export async function createTypeOrmDataSource(
   options?: DataSourceOptions,
 ): Promise<DataSource> {
