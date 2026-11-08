@@ -1,0 +1,83 @@
+{
+  "info": {
+    "name": "TCIT Posts API",
+    "description": "Colección de Postman para interactuar con la API REST del challenge de Posts (NestJS + TypeORM + PostgreSQL). Contrato JSON en camelCase: id, name, description.",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api",
+      "type": "string"
+    },
+    {
+      "key": "postId",
+      "value": "1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Posts",
+      "item": [
+        {
+          "name": "Listar posts",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/posts",
+              "host": ["{{baseUrl}}"],
+              "path": ["posts"]
+            },
+            "description": "Devuelve todos los posts ordenados por id descendente."
+          },
+          "response": []
+        },
+        {
+          "name": "Crear post",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Mi primer post\",\n  \"description\": \"Contenido del post de ejemplo.\"\n}",
+              "options": {
+                "raw": { "language": "json" }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/posts",
+              "host": ["{{baseUrl}}"],
+              "path": ["posts"]
+            },
+            "description": "Crea un nuevo post. name: 1-120 chars, description: 1-1000 chars."
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar post",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/posts/{{postId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["posts", "{{postId}}"]
+            },
+            "description": "Elimina un post por id. Devuelve 204 No Content."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
