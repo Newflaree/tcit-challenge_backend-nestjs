@@ -5,7 +5,7 @@ API REST del challenge de Posts. Construida con NestJS, TypeORM y PostgreSQL.
 - Puerto por defecto: `3000`
 - Prefijo global de la API: `/api`
 - Origen permitido por CORS: `http://localhost:4200` (configurable)
-- Documentación del proyecto: [`../README.md`](../README.md)
+- Documentación de puesta en marcha: [`docs/setup.md`](docs/setup.md)
 
 ## Requisitos
 
