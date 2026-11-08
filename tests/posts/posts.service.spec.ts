@@ -1,122 +1,92 @@
 import 'reflect-metadata';
 import { Repository } from 'typeorm';
-import { PostsService } from '../../src/posts/posts.service';
-import { Post } from '../../src/posts/entities/post.entity';
-import { CreatePostDto } from '../../src/posts/dto/create-post.dto';
+import { Post } from '../../src/domain/entities/post.entity';
+import { CreatePostDto } from '../../src/application/dtos/create-post.dto';
+import { CreatePostUseCase } from '../../src/application/use-cases/create-post/create-post.use-case';
+import { GetAllPostsUseCase } from '../../src/application/use-cases/get-all-posts/get-all-posts.use-case';
+import { DeletePostUseCase } from '../../src/application/use-cases/delete-post/delete-post.use-case';
+import { IPostRepository } from '../../src/domain/repositories/post.repository';
 
-describe('PostsService', () => {
-  let service: PostsService;
-  let findMock: jest.Mock;
-  let saveMock: jest.Mock;
-  let createMock: jest.Mock;
-  let removeMock: jest.Mock;
-  let findOneMock: jest.Mock;
-
-  beforeEach(() => {
-    findMock = jest.fn();
-    saveMock = jest.fn();
-    createMock = jest.fn((data: Partial<Post>) =>
-      Object.assign(new Post(), data),
-    );
-    removeMock = jest.fn();
-    findOneMock = jest.fn();
-    const repository = {
-      find: findMock,
-      save: saveMock,
-      create: createMock,
-      remove: removeMock,
-      findOne: findOneMock,
-    } as unknown as Repository<Post>;
-    service = new PostsService(repository);
-  });
-
-  it('devuelve el listado mapeado ordenado por id descendente', async () => {
-    const posts = [
-      Object.assign(new Post(), {
-        id: 2,
-        name: 'Segundo',
-        description: 'Desc 2',
-      }),
-      Object.assign(new Post(), {
-        id: 1,
-        name: 'Primero',
-        description: 'Desc 1',
-      }),
-    ];
-    findMock.mockResolvedValue(posts);
-
-    const result = await service.findAll();
-
-    expect(findMock).toHaveBeenCalledWith({ order: { id: 'DESC' } });
-    expect(result).toHaveLength(2);
-    expect(result[0]).toEqual({
-      id: 2,
-      name: 'Segundo',
-      description: 'Desc 2',
-    });
-    expect(result[1]).toEqual({
-      id: 1,
-      name: 'Primero',
-      description: 'Desc 1',
-    });
-  });
-
-  it('devuelve [] si el repositorio está vacío', async () => {
-    findMock.mockResolvedValue([]);
-
-    const result = await service.findAll();
-
-    expect(result).toEqual([]);
-  });
-
-  it('guarda y devuelve el post mapeado con valores normalizados', async () => {
-    const dto: CreatePostDto = {
-      name: '  Nuevo post  ',
-      description: '  Desc  ',
+describe('CreatePostUseCase', () => {
+  it('crea y devuelve el post mapeado', async () => {
+    const post = Object.assign(new Post(), { id: 1, name: 'A', description: 'D' });
+    const repository: IPostRepository = {
+      findAll: jest.fn(),
+      findOne: jest.fn(),
+      create: jest.fn(() => post),
+      save: jest.fn().mockResolvedValue(post),
+      remove: jest.fn(),
     };
-    const saved = Object.assign(new Post(), {
-      id: 3,
-      name: 'Nuevo post',
-      description: 'Desc',
-    });
-    saveMock.mockResolvedValue(saved);
+    const useCase = new CreatePostUseCase(repository);
+    const dto = Object.assign(new CreatePostDto(), { name: '  A  ', description: '  D  ' });
 
-    const result = await service.create(dto);
+    const result = await useCase.execute(dto);
 
-    expect(createMock).toHaveBeenCalledWith({
-      name: 'Nuevo post',
-      description: 'Desc',
-    });
-    expect(saveMock).toHaveBeenCalled();
-    expect(result).toEqual({ id: 3, name: 'Nuevo post', description: 'Desc' });
+    expect(repository.create).toHaveBeenCalledWith({ name: 'A', description: 'D' });
+    expect(result).toEqual({ id: 1, name: 'A', description: 'D' });
   });
+});
 
-  it('elimina y devuelve el post mapeado', async () => {
-    const post = Object.assign(new Post(), {
-      id: 5,
-      name: 'A borrar',
-      description: 'Desc',
-    });
-    findOneMock.mockResolvedValue(post);
-    removeMock.mockResolvedValue(post);
+describe('GetAllPostsUseCase', () => {
+  it('devuelve todos los posts mapeados', async () => {
+    const posts = [Object.assign(new Post(), { id: 2, name: 'B', description: 'D2' })];
+    const repository: IPostRepository = {
+      findAll: jest.fn().mockResolvedValue(posts),
+      findOne: jest.fn(),
+      create: jest.fn(),
+      save: jest.fn(),
+      remove: jest.fn(),
+    };
+    const useCase = new GetAllPostsUseCase(repository);
 
-    const result = await service.remove(5);
+    const result = await useCase.execute();
 
-    expect(findOneMock).toHaveBeenCalledWith({ where: { id: 5 } });
-    expect(removeMock).toHaveBeenCalledWith(post);
+    expect(result).toEqual([{ id: 2, name: 'B', description: 'D2' }]);
+  });
+});
+
+describe('DeletePostUseCase', () => {
+  it('elimina y devuelve el post', async () => {
+    const post = Object.assign(new Post(), { id: 5, name: 'A borrar', description: 'Desc' });
+    const repository: IPostRepository = {
+      findAll: jest.fn(),
+      findOne: jest.fn().mockResolvedValue(post),
+      create: jest.fn(),
+      save: jest.fn(),
+      remove: jest.fn().mockResolvedValue(post),
+    };
+    const useCase = new DeletePostUseCase(repository);
+
+    const result = await useCase.execute(5);
+
+    expect(repository.findOne).toHaveBeenCalledWith(5);
+    expect(repository.remove).toHaveBeenCalledWith(post);
     expect(result).toEqual({ id: 5, name: 'A borrar', description: 'Desc' });
   });
 
   it('lanza BadRequestException si el id no es válido', async () => {
-    await expect(service.remove(0)).rejects.toThrow('id debe ser un entero positivo');
-    await expect(service.remove(-1)).rejects.toThrow('id debe ser un entero positivo');
+    const repository: IPostRepository = {
+      findAll: jest.fn(),
+      findOne: jest.fn(),
+      create: jest.fn(),
+      save: jest.fn(),
+      remove: jest.fn(),
+    };
+    const useCase = new DeletePostUseCase(repository);
+
+    await expect(useCase.execute(0)).rejects.toThrow('id debe ser un entero positivo');
   });
 
   it('lanza NotFoundException si el post no existe', async () => {
-    findOneMock.mockResolvedValue(null);
+    const repository: IPostRepository = {
+      findAll: jest.fn(),
+      findOne: jest.fn().mockResolvedValue(null),
+      create: jest.fn(),
+      save: jest.fn(),
+      remove: jest.fn(),
+    };
+    const useCase = new DeletePostUseCase(repository);
 
-    await expect(service.remove(999)).rejects.toThrow(
-      'Post con id 999 no encontrado',
-    );
+    await expect(useCase.execute(999)).rejects.toThrow('Post con id 999 no encontrado');
   });
 });
