@@ -34,12 +34,20 @@ async function bootstrap() {
   if (swaggerEnabled) {
     const swaggerConfig = new DocumentBuilder()
       .setTitle('TCIT Posts API')
-      .setDescription('API REST del challenge de Posts')
-      .setVersion('1.0')
-      .addTag('Posts', 'Operaciones sobre posts')
+      .setDescription(
+        'API REST del challenge de Posts. Permite listar, crear y eliminar posts. ' +
+          'Contrato JSON en camelCase: id, name, description.',
+      )
+      .setVersion('1.0.0')
+      .setContact('TCIT Challenge', 'https://tcit.com', 'dev@tcit.com')
+      .setLicense('MIT', 'https://opensource.org/licenses/MIT')
+      .addServer('http://localhost:3000', 'Desarrollo local')
+      .addTag('Posts', 'Operaciones sobre posts: listar, crear y eliminar.')
       .build();
     const document = SwaggerModule.createDocument(app, swaggerConfig);
-    SwaggerModule.setup('api/docs', app, document);
+    SwaggerModule.setup('api/docs', app, document, {
+      swaggerOptions: { persistAuthorization: true },
+    });
   }
 
   app.enableCors({
