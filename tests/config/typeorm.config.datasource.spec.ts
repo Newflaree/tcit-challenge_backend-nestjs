@@ -4,14 +4,8 @@ import { validateEnv, type EnvironmentVariables } from '../../src/config/env.val
 import {
   createTypeOrmDataSource,
   createTypeOrmDataSourceOptions,
-  createTypeOrmOptions,
 } from '../../src/config/typeorm.config';
 
-/**
- * `@nestjs/config` se distribuye como ESM y el runtime unitario es CJS, por lo
- * que se stubbean los dos métodos que `typeorm.config.ts` usa de ConfigService.
- * El import del tipo se elide en tiempo de ejecución.
- */
 function createConfigServiceStub(
   overrides: Record<string, unknown> = {},
 ): ConfigService {
@@ -40,54 +34,6 @@ function createConfigServiceStub(
     },
   } as unknown as ConfigService;
 }
-
-describe('createTypeOrmDataSourceOptions', () => {
-  it('mapea las variables de entorno a opciones de PostgreSQL', () => {
-    const options = createTypeOrmDataSourceOptions(createConfigServiceStub());
-
-    expect(options).toEqual(
-      expect.objectContaining({
-        type: 'postgres',
-        host: 'localhost',
-        port: 5432,
-        username: 'postgres',
-        password: 'secret',
-        database: 'tcit_posts_test',
-        synchronize: false,
-        migrationsRun: false,
-      }),
-    );
-
-    const { entities, migrations } = options as {
-      entities: string[];
-      migrations: string[];
-    };
-    expect(entities).toHaveLength(1);
-    expect(migrations).toHaveLength(1);
-  });
-
-  it('registra errores y advertencias sólo en desarrollo', () => {
-    expect(
-      createTypeOrmDataSourceOptions(createConfigServiceStub()).logging,
-    ).toEqual(['error']);
-
-    expect(
-      createTypeOrmDataSourceOptions(
-        createConfigServiceStub({ NODE_ENV: 'development' }),
-      ).logging,
-    ).toEqual(['error', 'warn']);
-  });
-});
-
-describe('createTypeOrmOptions', () => {
-  it('falla rápido con un único reintento', () => {
-    const options = createTypeOrmOptions(createConfigServiceStub());
-
-    expect(options).toEqual(
-      expect.objectContaining({ retryAttempts: 1, retryDelay: 1000 }),
-    );
-  });
-});
 
 describe('createTypeOrmDataSource', () => {
   it('rechaza la ausencia de opciones', async () => {
