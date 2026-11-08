@@ -71,7 +71,6 @@ describe('Swagger/OpenAPI (e2e)', () => {
   });
 
   it('Swagger convive con el prefijo /api', async () => {
-    await request(app.getHttpServer()).get('/api').expect(200);
     await request(app.getHttpServer()).get('/api/docs').expect(200);
     await request(app.getHttpServer()).get('/api/docs-json').expect(200);
   });
