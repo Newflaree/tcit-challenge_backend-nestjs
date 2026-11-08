@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreatePostController } from '../../src/infrastructure/http/controllers/create-post.controller';
-import { GetAllPostsController } from '../../src/infrastructure/http/controllers/get-all-posts.controller';
-import { DeletePostController } from '../../src/infrastructure/http/controllers/delete-post.controller';
-import { CreatePostUseCase } from '../../src/application/use-cases/create-post/create-post.use-case';
-import { GetAllPostsUseCase } from '../../src/application/use-cases/get-all-posts/get-all-posts.use-case';
-import { DeletePostUseCase } from '../../src/application/use-cases/delete-post/delete-post.use-case';
-import { CreatePostDto } from '../../src/application/dtos/create-post.dto';
+import { CreatePostController } from '../../src/posts/infrastructure/http/controllers/create-post.controller';
+import { GetAllPostsController } from '../../src/posts/infrastructure/http/controllers/get-all-posts.controller';
+import { DeletePostController } from '../../src/posts/infrastructure/http/controllers/delete-post.controller';
+import { CreatePostUseCase } from '../../src/posts/application/use-cases/create-post/create-post.use-case';
+import { GetAllPostsUseCase } from '../../src/posts/application/use-cases/get-all-posts/get-all-posts.use-case';
+import { DeletePostUseCase } from '../../src/posts/application/use-cases/delete-post/delete-post.use-case';
+import { CreatePostDto } from '../../src/posts/application/dtos/create-post.dto';
 
 describe('GetAllPostsController', () => {
   it('delega en el use case', async () => {

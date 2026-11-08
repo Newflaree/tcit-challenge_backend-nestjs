@@ -9,7 +9,7 @@ import {
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DeletePostUseCase } from '../../../application/use-cases/delete-post/delete-post.use-case';
 import { PostResponseDto } from '../../../application/dtos/post-response.dto';
-import { ErrorResponseDto } from '../../../common/dto/error-response.dto';
+import { ErrorResponseDto } from '../../../../common/dto/error-response.dto';
 
 @ApiTags('Posts')
 @Controller('posts')

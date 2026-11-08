@@ -88,23 +88,12 @@
       "!src/database/data-source.ts",
       "!src/database/migrations/**",
       "!src/infrastructure/**",
-      "!src/config/**",
-      "!src/posts/posts.module.ts"
+      "!src/posts/infrastructure/**",
+      "!src/posts/posts.module.ts",
+      "!src/config/**"
     ],
     "coverageDirectory": "../coverage",
     "coverageThreshold": {
-      "./src/application/dtos/": {
-        "branches": 100,
-        "functions": 100,
-        "lines": 100,
-        "statements": 100
-      },
-      "./src/application/use-cases/": {
-        "branches": 100,
-        "functions": 100,
-        "lines": 100,
-        "statements": 100
-      },
       "./src/common/dto/": {
         "branches": 100,
         "functions": 100,
@@ -117,7 +106,19 @@
         "lines": 100,
         "statements": 100
       },
-      "./src/domain/entities/": {
+      "./src/posts/application/dtos/": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
+      },
+      "./src/posts/application/use-cases/": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
+      },
+      "./src/posts/domain/entities/": {
         "branches": 100,
         "functions": 100,
         "lines": 100,

@@ -1,6 +1,6 @@
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
-import { CreatePostDto } from '../../../src/application/dtos/create-post.dto';
+import { CreatePostDto } from '../../../src/posts/application/dtos/create-post.dto';
 
 describe('CreatePostDto', () => {
   it('recorta espacios en name y description (string)', async () => {

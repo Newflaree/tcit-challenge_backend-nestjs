@@ -1,11 +1,11 @@
 import 'reflect-metadata';
 import { Repository } from 'typeorm';
-import { Post } from '../../src/domain/entities/post.entity';
-import { CreatePostDto } from '../../src/application/dtos/create-post.dto';
-import { CreatePostUseCase } from '../../src/application/use-cases/create-post/create-post.use-case';
-import { GetAllPostsUseCase } from '../../src/application/use-cases/get-all-posts/get-all-posts.use-case';
-import { DeletePostUseCase } from '../../src/application/use-cases/delete-post/delete-post.use-case';
-import { IPostRepository } from '../../src/domain/repositories/post.repository';
+import { Post } from '../../src/posts/domain/entities/post.entity';
+import { CreatePostDto } from '../../src/posts/application/dtos/create-post.dto';
+import { CreatePostUseCase } from '../../src/posts/application/use-cases/create-post/create-post.use-case';
+import { GetAllPostsUseCase } from '../../src/posts/application/use-cases/get-all-posts/get-all-posts.use-case';
+import { DeletePostUseCase } from '../../src/posts/application/use-cases/delete-post/delete-post.use-case';
+import { IPostRepository } from '../../src/posts/domain/repositories/post.repository';
 
 describe('CreatePostUseCase', () => {
   it('crea y devuelve el post mapeado', async () => {

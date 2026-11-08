@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
-import { Post } from '../../src/domain/entities/post.entity';
-import { toPostResponse } from '../../src/application/dtos/post-response.dto';
+import { Post } from '../../src/posts/domain/entities/post.entity';
+import { toPostResponse } from '../../src/posts/application/dtos/post-response.dto';
 import {
   createTestDataSource,
   truncateTestTables,

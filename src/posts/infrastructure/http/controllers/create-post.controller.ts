@@ -3,7 +3,7 @@ import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreatePostDto } from '../../../application/dtos/create-post.dto';
 import { CreatePostUseCase } from '../../../application/use-cases/create-post/create-post.use-case';
 import { PostResponseDto } from '../../../application/dtos/post-response.dto';
-import { ErrorResponseDto } from '../../../common/dto/error-response.dto';
+import { ErrorResponseDto } from '../../../../common/dto/error-response.dto';
 
 @ApiTags('Posts')
 @Controller('posts')
